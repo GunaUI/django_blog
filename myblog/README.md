@@ -5,7 +5,7 @@
 * Do migrations steps
 * Run server
 ## Models
-* create models in models.py
+* Create models in models.py
     * POST Model
     ```
         class Post(models.Model):
@@ -50,6 +50,63 @@
     ```
     * get_absolute_url - inform model where to go back once done
 
-    
+## Form
+* Now its time to create forms for the model
+* Create new forms.py inside app
+* here we going to use dictionary widgets to add special class to the form
+    ```
+        from django import forms
+
+        from blog_app.models import Post, Comment
+
+        class PostForm(forms.ModelForm):
+
+            class Meta:
+                model = Post
+                fields = ('author','title', 'text',)
+
+                widgets = {
+                    'title': forms.TextInput(attrs={'class': 'textinputclass'}),
+                    'text': forms.Textarea(attrs={'class': 'editable medium-editor-textarea postcontent'}),
+                }
+
+        class CommentForm(forms.ModelForm):
+
+            class Meta:
+                model = Comment
+                fields = ('author', 'text',)
+
+                widgets = {
+                    'author': forms.TextInput(attrs={'class': 'textinputclass'}),
+                    'text': forms.Textarea(attrs={'class': 'editable medium-editor-textarea'}),
+                }
+
+    ```
+##  CSS
+* Now create a new 'static' folder inside app to acomodate css ,js and other static files
+* inside css folder make a new css file and apply all your css here
+* create STATIC_ROOT in settings.py
+    ```
+        STATIC_ROOT = os.path.join(BASE_DIR,"static")
+    ```
+## Template
+* Now create a new 'template' folder inside app
+* Then create template directory path in settings.py
+    ```
+    TEMPLATE_DIR = os.path.join(BASE_DIR,'blog_app/templates/blog')
+    ```
+* Then register this TEMPLATE_DIR to templates
+    ```
+    'DIRS': [TEMPLATE_DIR,],
+    ```
+* Then register login redirect URL
+    ```
+        LOGIN_REDIRECT_URL = '/'
+    ```
+
+
+
+
+
 
 
