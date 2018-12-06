@@ -103,6 +103,128 @@
     ```
         LOGIN_REDIRECT_URL = '/'
     ```
+## Views and Templates
+### About
+* Create a simple  AboutView in views.py
+    ```
+    class AboutView(TemplateView):
+        template_name = 'about.html'
+    ```
+* Create base.html and about.html inside app's template folder
+* Create base template
+* Extend base template in about.html
+    ```
+        {% extends "blog/base.html" %}
+        {% block content %}
+        <h1>About me</h1>
+        <p>Thanks for visiting my blog! Check all this cool stuff about me!</p>
+
+        {% endblock %}
+    ```
+* Register Url.py about this newly created views and templates
+    ```
+        path('', include('blog_app.urls')),
+    ```
+    ```
+        path('about/', views.AboutView.as_view(),name='about'),
+    ```
+### Post List
+
+* Create a PostListView in views.py
+    ```
+    class PostListView(ListView):
+    model = Post
+
+    def get_queryset(self):
+        return Post.objects.filter(published_date__lte=timezone.now()).order_by('-published_date')
+    ```
+* In get_queryset lte stands for lesser than or equal tp and minus infornt of published_date bring latest post to top
+
+* Add Post List in URL
+    ```
+        path('', views.PostListView.as_view(),name='post_list'),
+    ```
+### Post Detail
+
+* Create a PostDetailView in views.py
+    ```
+    class PostDetailView(DetailView):
+        model = Post
+    ```
+* Add Post Detail in URL
+    ```
+        path('post/<int:pk>',views.PostDetailView.as_view(),name='post_detail')
+    ```
+### CreatePostView
+
+* Create a CreatePostView in views.py
+    ```
+    class CreatePostView(LoginRequiredMixin,CreateView):
+        login_url = '/login/'
+        redirect_field_name = 'blog_app/post_detail.html'
+
+        form_class = PostForm
+
+        model = Post
+    ```
+* here login required to proceed post in "class based view", for that we need to import LoginRequiredMixin for authentication purpose
+
+    ```
+    from django.contrib.auth.mixins import LoginRequiredMixin
+    ```
+* Incase if it is function based view with automated login funtionality add login_required
+
+    ```
+        from django.contrib.auth.decorators import login_required
+    ```
+* here PostForm refers to the form template
+* Create Post Detail in URL
+    ```
+        path('post/new/',views.CreatePostView.as_view(),name='post_new')
+    ```
+### UpdatePostView
+
+* Create a PostUpdateView in views.py
+    ```
+    class PostUpdateView(LoginRequiredMixin,CreateView):
+        login_url = '/login/'
+        redirect_field_name = 'blog_app/post_detail.html'
+
+        form_class = PostForm
+
+        model = Post
+    ```
+* Rest of the steps same as create
+
+### DeletePostView
+* Create delete post view , import reverse lazy to redirect after deleted succesfully untill we don't want to move to other page.
+
+    ```
+    class PostDeleteView(LoginRequiredMixin,DeleteView):
+        model = Post
+        success_url = reverse_lazy('post_list')
+    ```
+### DraftListView
+* Create DraftListView with get_queryset published_date__isnull 
+
+    ```
+        class DraftListView(LoginRequiredMixin,ListView):
+            login_url = '/login/'
+            redirect_field_name = 'blog/post_list.html'
+
+            model = Post
+
+            def get_queryset(self):
+                return Post.objects.filter(published_date__isnull=True).order_by('created_date')
+    ```
+* Add corresponding URL Path
+
+    ```
+        path('drafts/',views.DraftListView.as_view(),name='post_draft_list'),
+    ```
+
+
+
 
 
 
