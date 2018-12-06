@@ -223,6 +223,80 @@
         path('drafts/',views.DraftListView.as_view(),name='post_draft_list'),
     ```
 
+## Comments
+
+### Add comments to your post
+
+* Create a add_comment_to_post function in views.py
+* before that we need to import login_required, get_object_or_404, redirect
+
+    ```
+        @login_required
+        def add_comment_to_post(request, pk):
+            post = get_object_or_404(Post, pk=pk)
+            if request.method == "POST":
+                form = CommentForm(request.POST)
+                if form.is_valid():
+                    comment = form.save(commit=False)
+                    comment.post = post
+                    comment.save()
+                    return redirect('post_detail', pk=post.pk)
+            else:
+                form = CommentForm()
+            return render(request, 'blog_app/comment_form.html', {'form': form})
+    ```
+* here login_required decorator is need to comment on any post
+* then to comment a post we need a request and post's primary key
+* get_object_or_404 means get the Post obeject or return not found in that we have to pass POST model and Primart key
+* Once comment form submited add primary key details ie "Post" and then confirm save untill commit comments to false
+* Once sucessfully comments submited redirect to post_detail page
+* incase if the post method is not "POST" just return it to the comment form with form context dictionary
+
+* Add corresponding URL Path for comment post
+    ```
+        path('post/comment/<int:pk>/',views.add_comment_to_post,name='add_comment_to_post'),
+    ```
+
+### Approve comments
+
+    ```
+        @login_required
+        def comment_approve(request, pk):
+            comment = get_object_or_404(Comment, pk=pk)
+            comment.approve()
+            return redirect('post_detail', pk=comment.post.pk)
+    ```
+* Add corresponding URL Path for comment post
+    ```
+        path('comment/approve/<int:pk>/',views.comment_approve,name='comment_approve'),
+    ```
+### Remove comments
+    ```
+        @login_required
+        def comment_remove(request, pk):
+            comment = get_object_or_404(Comment, pk=pk)
+            post_pk = comment.post.pk
+            comment.delete()
+            return redirect('post_detail', pk=post_pk)
+    ```
+* Add corresponding URL Path for comment post
+    ```
+        path('comment/remove/<int:pk>/',views.comment_remove,name='comment_remove'),
+    ```
+### Publish Post
+
+    ```
+        @login_required
+        def post_publish(request, pk):
+            post = get_object_or_404(Post, pk=pk)
+            post.publish()
+            return redirect('post_detail', pk=pk)
+    ```
+* Add corresponding URL Path for Publish Post 
+    ```
+        path('post/publish/<int:pk>/',views.post_publish,name='post_publish'),
+    ```
+
 
 
 
