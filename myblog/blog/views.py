@@ -43,8 +43,8 @@ class PostDeleteView(LoginRequiredMixin,DeleteView):
     success_url = reverse_lazy('post_list')
 
 class DraftListView(LoginRequiredMixin,ListView):
-    # login_url = '/login/'
-    # redirect_field_name = 'blog/post_list.html'
+    login_url = '/login/'
+    redirect_field_name = 'blog/post_list.html'
     # context_object_name = 'draft_post'
     model = Post
 

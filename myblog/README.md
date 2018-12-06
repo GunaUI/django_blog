@@ -297,12 +297,12 @@
         path('post/publish/<int:pk>/',views.post_publish,name='post_publish'),
     ```
 ### Login
-
+* Make sure you have added LOGIN_REDIRECT_URL and LOGOUT_REDIRECT_URL in settings.py
 * Add corresponding URL Path for Login, Logout in project's URL
 
     ```
-        path('accounts/login/', , views.views.LoginView.as_view(), name='login'),
-        path('accounts/logout/', , views.logout, name='logout', kwargs={'next_page': '/'}),
+        path('accounts/login/', views.LoginView.as_view(), name='login'),
+        path('/', views.LogoutView.as_view(), name='logout'),
     ```
 * Here views.views.LoginView.as_view() and views.LogoutView.as_view() are inbuild view function of django
 
