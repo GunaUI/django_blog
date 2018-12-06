@@ -11,7 +11,7 @@ from django.utils import timezone
 
 # Create your views here.
 class AboutView(TemplateView):
-    template_name = 'about.html'
+    template_name = 'blog/about.html'
 
 class PostListView(ListView):
     model = Post
@@ -24,15 +24,15 @@ class PostDetailView(DetailView):
 
 class CreatePostView(LoginRequiredMixin,CreateView):
     login_url = '/login/'
-    redirect_field_name = 'blog_app/post_detail.html'
+    redirect_field_name = 'post_detail.html'
 
     form_class = PostForm
 
-    model = 
+    model = Post
 
 class PostUpdateView(LoginRequiredMixin,UpdateView):
     login_url = '/login/'
-    redirect_field_name = 'blog_app/post_detail.html'
+    redirect_field_name = 'blog/post_detail.html'
 
     form_class = PostForm
 
@@ -43,9 +43,9 @@ class PostDeleteView(LoginRequiredMixin,DeleteView):
     success_url = reverse_lazy('post_list')
 
 class DraftListView(LoginRequiredMixin,ListView):
-    login_url = '/login/'
-    redirect_field_name = 'blog/post_list.html'
-
+    # login_url = '/login/'
+    # redirect_field_name = 'blog/post_list.html'
+    # context_object_name = 'draft_post'
     model = Post
 
     def get_queryset(self):

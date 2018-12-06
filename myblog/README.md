@@ -32,7 +32,7 @@
 
     ```
         class Comment(models.Model):
-            post = models.ForeignKey('blog.Post', related_name='comments',on_delete=models.CASCADE,)
+            post = models.ForeignKey('blog_app.Post', related_name='comments',on_delete=models.CASCADE,)
             author = models.CharField(max_length=200)
             text = models.TextField()
             created_date = models.DateTimeField(default=timezone.now)
@@ -161,7 +161,7 @@
     ```
     class CreatePostView(LoginRequiredMixin,CreateView):
         login_url = '/login/'
-        redirect_field_name = 'blog_app/post_detail.html'
+        redirect_field_name = 'blog/post_detail.html'
 
         form_class = PostForm
 
@@ -188,7 +188,7 @@
     ```
     class PostUpdateView(LoginRequiredMixin,CreateView):
         login_url = '/login/'
-        redirect_field_name = 'blog_app/post_detail.html'
+        redirect_field_name = 'blog/post_detail.html'
 
         form_class = PostForm
 
@@ -243,7 +243,7 @@
                     return redirect('post_detail', pk=post.pk)
             else:
                 form = CommentForm()
-            return render(request, 'blog_app/comment_form.html', {'form': form})
+            return render(request, 'blog/comment_form.html', {'form': form})
     ```
 * here login_required decorator is need to comment on any post
 * then to comment a post we need a request and post's primary key
@@ -330,6 +330,42 @@
         {% endblock %}
     ```
 * In above template you could fina hidden field next , value for this field will be supplied from login view once done login based on that redirect will happen after login.
+
+### Templates
+* Update page templates with extending base template in all pages
+* Give proper href example as below
+    ```
+    <a class="btn btn-default" href="{% url 'post_publish' pk=post.pk %}">Publish</a>
+    ```
+* use default model_list eg : post_list for listview in for loop
+* form_class is a class attribute used to specify which form you want to use (refer CreatePostView)
+* In PostDraftListView create your own context_object_name like
+```
+context_object_name = 'draft_post'
+```
+
+* and in post_draft_list.html instead of for post in posts, Write
+```
+for post in draft_post
+```
+
+* Actually it's a better practice to give your own context_object_name.
+
+* template_name - to be and if you want to use the deafults or not
+* post_confirm_delete.html - default delete template
+
+### Register newly created models in admin.py
+
+```
+    from blog_app.models import Post, Comment
+    
+    admin.site.register(Post)
+    admin.site.register(Comment)
+```
+
+* Run migrations steps, create super user
+
+
 
 
 
