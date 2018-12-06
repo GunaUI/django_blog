@@ -296,6 +296,40 @@
     ```
         path('post/publish/<int:pk>/',views.post_publish,name='post_publish'),
     ```
+### Login
+
+* Add corresponding URL Path for Login, Logout in project's URL
+
+    ```
+        path('accounts/login/', , views.views.LoginView.as_view(), name='login'),
+        path('accounts/logout/', , views.logout, name='logout', kwargs={'next_page': '/'}),
+    ```
+* Here views.views.LoginView.as_view() and views.LogoutView.as_view() are inbuild view function of django
+
+* login template inside registration app folder 
+
+    ```
+        {% extends 'blog/base.html' %}
+        {% block content %}
+        <div class="jumbotron">
+
+            <h2>Please Login: </h2>
+            <h3>(Must be SuperUser, please check admin for issues.)</h3>
+            {% if form.errors %}
+                <p>Your username and password didn't match.Please try again!</p>
+            {% endif %}
+
+            <form method="POST" action="{% url 'login' %}">
+            {% csrf_token %}
+                {{form.as_p}}
+
+                <input type="submit" class='btn btn-primary' value="Login" />
+                <input type="hidden" name="next" value="{{ next }}" />
+            </form>
+        </div>
+        {% endblock %}
+    ```
+* In above template you could fina hidden field next , value for this field will be supplied from login view once done login based on that redirect will happen after login.
 
 
 
